@@ -35,3 +35,5 @@ yarn-error.log*
 /.editorconfig
 /.eslintignore
 /.eslintrc.js
+/.vscode/settings.json
+/.vscode/extensions.json
