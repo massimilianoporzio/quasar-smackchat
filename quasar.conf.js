@@ -116,8 +116,8 @@ module.exports = configure(function (ctx) {
         // Tell browser when a file from the server should expire from cache (in ms)
 
       chainWebpackWebserver (chain) {
-        chain.plugin('eslint-webpack-plugin')
-          .use(ESLintPlugin, [{ extensions: [ 'js' ] }])
+        // chain.plugin('eslint-webpack-plugin')
+        //   .use(ESLintPlugin, [{ extensions: [ 'js' ] }])
       },
 
       middlewares: [
