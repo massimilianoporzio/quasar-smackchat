@@ -1,5 +1,7 @@
 // Firebase App (the core Firebase SDK) is always required and must be listed first
-import firebase from "firebase/app";
+// v9 compat packages are API compatible with v8 code
+import firebase from 'firebase/compat/app';
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // If you are using v7 or any earlier version of the JS SDK, you should import firebase using namespace import
@@ -9,8 +11,8 @@ import { initializeApp } from "firebase/app";
 import "firebase/analytics";
 
 // Add the Firebase products that you want to use
-import "firebase/auth";
-import "firebase/database"; // database is real-time database non il firestore solito
+import { getAuth } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 
 
 // Your web app's Firebase configuration
@@ -20,16 +22,18 @@ const firebaseConfig = {
   projectId: "smackchat-c52ff",
   storageBucket: "smackchat-c52ff.appspot.com",
   messagingSenderId: "788572345942",
-  appId: "1:788572345942:web:a031f60be7f2cac320cdf7"
+  appId: "1:788572345942:web:a031f60be7f2cac320cdf7",
+  databaseURL: "https://smackchat-c52ff-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
 // Initialize Firebase
-let firebaseApp = initializeApp(firebaseConfig);
+let firebaseApp = firebase.initializeApp(firebaseConfig);
 
 // API PER AUTH
-let firebaseAuth = firebaseApp.auth
+let firebaseAuth = getAuth();
 
 //API per db
-let firebaseDb = firebaseApp.database
+let firebaseDb = getDatabase();
+
 
 export {firebaseAuth, firebaseDb}

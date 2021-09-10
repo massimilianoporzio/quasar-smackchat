@@ -9,7 +9,7 @@
         <q-toolbar-title class="absolute-center">
           {{ title }}
         </q-toolbar-title>
-        <q-btn class="absolute-right q-pr-sm"
+        <q-btn class="absolute-right q-pr-md"
           to="/auth"
           flat dense icon="account_circle" label="Login"
           no-caps
