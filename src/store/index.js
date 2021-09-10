@@ -1,4 +1,4 @@
-import ciccia from './module-example'
+import auth from './auth'
 
 import { createStore } from 'vuex'
 import {store} from "quasar/wrappers";
@@ -16,7 +16,7 @@ import {store} from "quasar/wrappers";
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
-      ciccia
+      auth
     },
 
     // enable strict mode (adds overhead!)
