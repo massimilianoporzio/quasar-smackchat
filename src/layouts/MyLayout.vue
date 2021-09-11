@@ -9,11 +9,23 @@
         <q-toolbar-title class="absolute-center">
           {{ title }}
         </q-toolbar-title>
-        <q-btn class="absolute-right q-pr-md"
-          to="/auth"
-          flat dense icon="account_circle" label="Login"
-          no-caps
-        />
+
+          <q-btn class="absolute-right q-px-md"
+                 to="/auth"
+                 v-if="!isLoading && !userDetails.userId"
+                 flat dense icon="account_circle" label="Login"
+                 no-caps
+          />
+
+        <q-btn class="absolute-right q-px-md"
+               v-else-if="!isLoading"
+               @click="logoutUser"
+               align="between"
+               flat dense icon="account_circle"
+               no-caps
+        ><span style="padding-left:10px">Logout<br>{{userDetails.name}}</span>
+
+        </q-btn>
 
       </q-toolbar>
     </q-header>
@@ -73,10 +85,15 @@ const linksList = [
 ];
 
 import { defineComponent, ref } from 'vue'
+import {mapState, mapActions} from 'vuex'
 
 export default defineComponent({
   name: 'MainLayout',
+  methods: {
+    ...mapActions('auth',['logoutUser'])
+  },
   computed: {
+    ...mapState('auth',['userDetails','isLoading']),
     title () {
       let currentPath =  this.$route.fullPath
       if (currentPath == '/'){
@@ -104,3 +121,10 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="stylus">
+.q-toolbar
+  .q-btn
+    line-height: 1.2;
+
+</style>
