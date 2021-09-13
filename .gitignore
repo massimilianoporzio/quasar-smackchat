@@ -37,3 +37,7 @@ yarn-error.log*
 /.eslintrc.js
 /.vscode/settings.json
 /.vscode/extensions.json
+
+.quasar-ide-helper
+
+webpack.config.js

@@ -1,6 +1,6 @@
 import {firebaseAuth, firebaseDb} from "boot/firebase";
 import {signInWithEmailAndPassword,createUserWithEmailAndPassword,onAuthStateChanged, signOut } from "firebase/auth";
-import {ref,set, get, child,onValue ,update} from 'firebase/database'
+import {ref,set, get, child,onValue ,update,onChildAdded, onChildChanged} from 'firebase/database'
 
 import {setUserDetails} from "src/store/auth/mutations";
 
@@ -15,6 +15,7 @@ export function registerUser ({},payload) {
            email: payload.email,
            online: true
          });
+
         console.log(response)
       }).catch(error=>{
         console.log(error.message)
@@ -44,6 +45,7 @@ export function handleAuthStateChange({commit, dispatch,state}) {
   onAuthStateChanged(firebaseAuth,(user)=>{
     commit('setLoading',true)
     if (user){
+
       // user is logged in
       const dbRef = ref(firebaseDb);
       onValue(child(dbRef, `users/${user.uid}`),(snapshot)=>{
@@ -54,15 +56,20 @@ export function handleAuthStateChange({commit, dispatch,state}) {
           email: userDetails.email,
           userId: user.uid
         })
+
         commit('setLoading',false)
+      },{
+        onlyOnce: true
       })
-      // update user details on the state
+      // update user details on thefirebaseDB
       dispatch('firebaseUpdateUser',{
         userId: user.uid,
         updates: {
-          online: true
+          'online': true
         }
       })
+      //leggo da db tutti gli users
+      dispatch('firebaseGetUsers')
       this.$router.push('/')
 
     }
@@ -76,7 +83,7 @@ export function handleAuthStateChange({commit, dispatch,state}) {
       dispatch('firebaseUpdateUser',{
         userId: userId,
         updates: {
-          online: false
+          'online': false
         }
       })
       commit('setUserDetails',{})
@@ -86,7 +93,28 @@ export function handleAuthStateChange({commit, dispatch,state}) {
 }
 
 export function firebaseUpdateUser({},payload) {
-  update(ref(firebaseDb,'users/'+payload.userId),payload.updates)
+  if(payload.userId){
+    update(ref(firebaseDb,'/users/'+payload.userId),payload.updates)
+  }
+
+
 }
 
-
+export function firebaseGetUsers({commit}){
+  onChildAdded(ref(firebaseDb,'users'), snapshot=>{
+    let userDetails = snapshot.val()
+    let userId = snapshot.key
+    commit('addUser',{
+      userId,
+      userDetails
+    })
+  });
+  onChildChanged(ref(firebaseDb,'users'), snapshot=>{
+    let userDetails = snapshot.val()
+    let userId = snapshot.key
+    commit('updateUser',{
+      userId,
+      userDetails
+    })
+  });
+}
