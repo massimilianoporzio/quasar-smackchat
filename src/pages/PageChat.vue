@@ -3,7 +3,7 @@
     <q-banner class="bg-grey-4 text-center">
       User is offline.
      </q-banner>
-    <div class="q-pa-md column col justify-end">
+    <div class="q-pa-md column col justify-end" v-if="!isChatLoading">
       <q-chat-message
         v-for="message in messages" :key="message.text"
         :name="message.from"
@@ -11,6 +11,12 @@
         :sent = "message.from == 'me' ? true : false"
       />
 
+    </div>
+    <div class="q-pa-md q-mx-auto column col justify-center" v-else>
+      <q-spinner-comment
+          color="primary"
+          size="12em"
+      />
     </div>
     <q-footer elevated>
 
@@ -35,27 +41,32 @@
 
 <script>
 import { defineComponent } from 'vue';
+import {mapActions, mapState} from "vuex";
 
 export default defineComponent({
   data () {
     return {
     newMessage : '',
-      messages: [
-        {
-          text: 'Hey Jim how are you',
-          from: 'me'
-        },
-        {
-          text: 'Good Thanks, Danny! How are you',
-          from: 'them'
-        },
-        {
-          text: 'Pretty good',
-          from: 'me'
-        }
-      ]
+      // messages: [
+      //   {
+      //     text: 'Hey Jim how are you',
+      //     from: 'me'
+      //   },
+      //   {
+      //     text: 'Good Thanks, Danny! How are you',
+      //     from: 'them'
+      //   },
+      //   {
+      //     text: 'Pretty good',
+      //     from: 'me'
+      //   }
+      // ]
   }},
+  computed: {
+    ...mapState('chat',['isChatLoading','messages'])
+  },
   methods: {
+    ...mapActions('chat',['firebaseGetMessage','firebaseStopGettingMessages']),
     sendMessage() {
       this.messages.push({
         text: this.newMessage,
@@ -64,6 +75,12 @@ export default defineComponent({
       this.newMessage=''
 
     }
+  },
+  mounted () {
+    this.firebaseGetMessage(this.$route.params.otherUserId)
+  },
+  unmounted() {
+    this.firebaseStopGettingMessages()
   }
 })
 </script>

@@ -1,4 +1,5 @@
 import auth from './auth'
+import chat from './chat'
 
 import { createStore } from 'vuex'
 import {store} from "quasar/wrappers";
@@ -16,7 +17,8 @@ import {store} from "quasar/wrappers";
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
-      auth
+      auth,
+      chat
     },
 
     // enable strict mode (adds overhead!)
