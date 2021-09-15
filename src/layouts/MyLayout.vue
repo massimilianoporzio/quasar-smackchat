@@ -86,9 +86,11 @@ const linksList = [
 
 import { defineComponent, ref } from 'vue'
 import {mapState, mapActions} from 'vuex'
+import mixinOtherUserDetails from "src/mixins/mixinOtherUserDetails";
 
 export default defineComponent({
   name: 'MainLayout',
+  mixins: [mixinOtherUserDetails],
   methods: {
     ...mapActions('auth',['logoutUser'])
   },
@@ -100,7 +102,7 @@ export default defineComponent({
         return 'SmackChat'
       }
       else if (currentPath == '/auth') {return 'Login'}
-      else if (currentPath == '/chat') {return 'Chat'}
+      else if (currentPath.includes('/chat')) {return `Chat with ${this.otherUserDetails.name}`}
       else {return ''}
     }
   },

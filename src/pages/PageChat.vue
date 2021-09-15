@@ -1,12 +1,12 @@
 <template>
   <q-page class="flex column">
-    <q-banner class="bg-grey-4 text-center">
-      User is offline.
+    <q-banner class="bg-grey-4 text-center" v-if="!isChatLoading && !otherUserDetails.online">
+      User {{otherUserDetails.name}} is  {{otherUserDetails.online ? 'online' : 'offline'}}.
      </q-banner>
     <div class="q-pa-md column col justify-end" v-if="!isChatLoading">
       <q-chat-message
         v-for="message in messages" :key="message.text"
-        :name="message.from"
+        :name="message.from == 'me' ? userDetails.name : otherUserDetails.name"
         :text="[message.text]"
         :sent = "message.from == 'me' ? true : false"
       />
@@ -42,37 +42,38 @@
 <script>
 import { defineComponent } from 'vue';
 import {mapActions, mapState} from "vuex";
+import mixinOtherUserDetails from "src/mixins/mixinOtherUserDetails";
+import {firebaseSendMessage, sendMessage} from "src/store/chat/actions";
 
 export default defineComponent({
   data () {
     return {
     newMessage : '',
-      // messages: [
-      //   {
-      //     text: 'Hey Jim how are you',
-      //     from: 'me'
-      //   },
-      //   {
-      //     text: 'Good Thanks, Danny! How are you',
-      //     from: 'them'
-      //   },
-      //   {
-      //     text: 'Pretty good',
-      //     from: 'me'
-      //   }
-      // ]
+
   }},
+  mixins: [mixinOtherUserDetails],
   computed: {
-    ...mapState('chat',['isChatLoading','messages'])
+    ...mapState('chat',['isChatLoading','messages']),
+    ...mapState('auth',['userDetails','users']),
+
   },
   methods: {
-    ...mapActions('chat',['firebaseGetMessage','firebaseStopGettingMessages']),
+    ...mapActions('chat',['firebaseGetMessage','firebaseStopGettingMessages','firebaseSendMessage']),
+
     sendMessage() {
-      this.messages.push({
-        text: this.newMessage,
-        from: 'me'
-      })
-      this.newMessage=''
+      if(!(this.newMessage===''))
+      {
+        let payload = {
+          message: {
+            text: this.newMessage,
+            from: 'me'
+          },
+          otherUserId: this.$route.params.otherUserId
+        }
+        this.firebaseSendMessage(payload)
+        this.newMessage=''
+      }
+
 
     }
   },
