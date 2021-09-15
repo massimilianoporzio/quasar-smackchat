@@ -24,8 +24,7 @@ export function firebaseGetMessage({commit, state, rootState},otherUserId) {
     setTimeout(() => {
         commit('setIsLoadingChat',false)
         console.log('isChatLoading: ',state.isChatLoading)
-    }, 1000)
-    console.log('isChatLoading: ',state.isChatLoading)
+    }, 500)
 
 }
 
@@ -39,7 +38,7 @@ export function firebaseStopGettingMessages({commit}){
 }
 
 export function firebaseSendMessage( {commit, state, rootState},payload){
-    console.log("SEND MESSAGE PAYLOAD: ",payload)
+    // console.log("SEND MESSAGE PAYLOAD: ",payload)
     //scrivo messaggio su mio
     push(ref(firebaseDb,'/chats/' + rootState.auth.userDetails.userId +'/' + payload.otherUserId),payload.message)
     //cambio da 'me' a 'them' e scrivo su altro utente
